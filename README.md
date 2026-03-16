@@ -1,5 +1,7 @@
 # Weather App
 
+![Weather App Preview](screenshots/preview.png)
+
 A modern, responsive weather application built with Vue.js that provides real-time weather information for cities worldwide.
 
 ## Features
