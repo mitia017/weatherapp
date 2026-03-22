@@ -1,50 +1,64 @@
-# Weather App
+# Advanced Weather App (Vue.js 3 + Pinia + Tailwind)
 
-![Weather App Preview](screenshots/preview.png)
+![Weather App Preview](screenshots/preview_new.png)
 
-A modern, responsive weather application built with Vue.js that provides real-time weather information for cities worldwide.
+A professional-grade, modern, and responsive weather application built with Vue.js 3, Pinia, and Tailwind CSS.
 
 ## Features
 
-- **Real-time Weather Data:** Get up-to-date information on temperature, humidity, wind speed, and weather conditions.
-- **Dynamic Themes:** The user interface automatically adjusts its theme (Sunny, Cloudy, Rainy, Snowy) based on the current weather of the searched location.
-- **Responsive Design:** Optimized for various screen sizes using Bootstrap 5, ensuring a seamless experience on both mobile and desktop.
-- **City Search:** Easily search for weather updates by city name.
+- **🔍 Smart Autocomplete:** City search with dynamic suggestions and debounced input.
+- **🕘 Search History:** Automatically saves the last 5 searched cities (persisted in LocalStorage).
+- **⭐ Favorites Management:** Add/remove cities to your favorites for quick access (persisted in LocalStorage).
+- **⚡ Performance Optimized:** Lazy loading of pages/components and code splitting via Vue Router.
+- **🎨 Modern UI/UX:**
+  - SaaS-style design with Tailwind CSS.
+  - Fully responsive (mobile-first).
+  - Smooth transitions and animations.
+  - **Dark Mode** support with toggle.
+- **🌐 Robust API Integration:** Centralized weather data fetching using Axios.
 
 ## Tech Stack
 
-- **Frontend Framework:** [Vue.js](https://vuejs.org/)
-- **Styling:** [Bootstrap 5](https://getbootstrap.com/)
-- **API:** [WeatherAPI.com](https://www.weatherapi.com/)
+- **Frontend:** Vue.js 3 (Composition API)
+- **State Management:** Pinia
+- **Styling:** Tailwind CSS + Lucide Icons
+- **Build Tool:** Vite
+- **API:** WeatherAPI.com
 
 ## Getting Started
 
 ### Prerequisites
 
-To run this project locally, you only need a web browser.
+- [Node.js](https://nodejs.org/) (v16+)
+- npm / yarn / pnpm
 
-### Installation & Usage
+### Installation
 
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```bash
    cd weatherapp
    ```
-3. Open `index.html` in your favorite web browser.
 
-## Project Structure
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- `index.html`: The main entry point of the application.
-- `assets/`: Contains the compiled JavaScript and CSS files.
-- `favicon.ico`: The application's favicon.
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Acknowledgements
+### Building for Production
 
-- Weather data provided by [WeatherAPI.com](https://www.weatherapi.com/).
-- UI inspiration and styling components from [Bootstrap](https://getbootstrap.com/).
+To generate a production build:
+
+```bash
+npm run build
+```
+
+The output will be in the `dist/` directory.
 
 ---
-Developed as a showcase of Vue.js and API integration.
+Developed as an advanced showcase of Vue.js 3 best practices.
