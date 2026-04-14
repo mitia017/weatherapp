@@ -1,14 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+import { routes } from './routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('../views/HomeView.vue')
-    }
-  ]
-})
+  routes,
+  scrollBehavior() {
+    return { top: 0 };
+  },
+});
 
-export default router
+router.beforeEach((to) => {
+  if (to.meta.title) {
+    document.title = to.meta.title;
+  }
+});
+
+export default router;

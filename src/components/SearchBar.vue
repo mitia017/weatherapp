@@ -1,67 +1,120 @@
 <script setup>
-import { ref, watch } from 'vue'
-import { Search, MapPin, Loader2 } from 'lucide-vue-next'
-import { useWeatherStore } from '../stores/weather'
+import { ref, watch } from 'vue';
+import { Search, MapPin, Loader2 } from 'lucide-vue-next';
 
-const weatherStore = useWeatherStore()
-const searchQuery = ref('')
-let debounceTimer = null
+defineProps({
+  isDark: { type: Boolean, default: true },
+  loading: { type: Boolean, default: false },
+  suggestions: { type: Array, default: () => [] },
+});
 
+const emit = defineEmits(['search', 'suggest-request', 'clear-suggestions']);
+
+const searchQuery = ref('');
+let debounceTimer = null;
+
+/* debounce input → demande suggestions au parent */
 watch(searchQuery, (newQuery) => {
-  clearTimeout(debounceTimer)
+  clearTimeout(debounceTimer);
+
   if (newQuery.length < 3) {
-    weatherStore.suggestions = []
-    return
+    emit('clear-suggestions');
+    return;
   }
+
   debounceTimer = setTimeout(() => {
-    weatherStore.fetchSuggestions(newQuery)
-  }, 300)
-})
+    emit('suggest-request', newQuery);
+  }, 300);
+});
 
-const emit = defineEmits(['search'])
+/* search action */
+const handleSearch = (city = searchQuery.value) => {
+  if (!city) return;
 
-const handleSearch = (city) => {
-  emit('search', city || searchQuery.value)
-  searchQuery.value = ''
-  weatherStore.suggestions = []
-}
+  emit('search', city);
+  searchQuery.value = '';
+  emit('clear-suggestions');
+};
 </script>
 
 <template>
-  <div class="relative mb-8">
-    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-2 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl focus-within:border-blue-500 transition-all">
-      <Search class="w-6 h-6 text-slate-400 ml-2" />
+  <div class="relative">
+    <!-- INPUT -->
+    <div
+      class="flex items-center gap-3 px-5 py-3 rounded-full border transition-all duration-300"
+      :class="
+        isDark
+          ? 'bg-white/10 backdrop-blur-md border-white/15 focus-within:border-white/40 focus-within:bg-white/15'
+          : 'bg-white/70 backdrop-blur-md border-slate-200 shadow-sm focus-within:border-blue-300 focus-within:shadow-md'
+      "
+    >
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Rechercher une ville..."
-        class="flex-1 bg-transparent border-none outline-none py-2 text-lg text-slate-900 dark:text-slate-100"
+        placeholder="Search City"
+        class="flex-1 bg-transparent border-none outline-none text-sm font-medium"
+        :class="
+          isDark
+            ? 'text-white placeholder-white/40'
+            : 'text-slate-700 placeholder-slate-400'
+        "
         @keyup.enter="handleSearch()"
       />
+
       <button
         @click="handleSearch()"
-        class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50"
-        :disabled="weatherStore.loading"
+        :disabled="loading"
+        class="transition-colors disabled:opacity-40"
+        :class="
+          isDark
+            ? 'text-white/60 hover:text-white'
+            : 'text-slate-400 hover:text-blue-500'
+        "
       >
-        <Loader2 v-if="weatherStore.loading" class="w-5 h-5 animate-spin" />
-        <span v-else>Rechercher</span>
+        <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
+        <Search v-else class="w-5 h-5" />
       </button>
     </div>
 
-    <!-- Autocomplete Suggestions -->
+    <!-- AUTOCOMPLETE -->
     <div
-      v-if="weatherStore.suggestions.length > 0"
-      class="absolute z-10 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+      v-if="suggestions.length > 0"
+      class="absolute z-20 w-full mt-2 overflow-hidden rounded-2xl border shadow-2xl"
+      :class="
+        isDark
+          ? 'bg-[#1a2744]/95 backdrop-blur-xl border-white/10'
+          : 'bg-white border-slate-200'
+      "
     >
       <button
-        v-for="suggestion in weatherStore.suggestions"
+        v-for="suggestion in suggestions"
         :key="suggestion.id"
         @click="handleSearch(suggestion.name)"
-        class="w-full px-4 py-4 text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 last:border-0"
+        class="w-full px-4 py-3 text-left flex items-center gap-3 transition-colors border-b last:border-0"
+        :class="
+          isDark
+            ? 'hover:bg-white/10 border-white/5'
+            : 'hover:bg-slate-50 border-slate-100'
+        "
       >
-        <MapPin class="w-4 h-4 text-blue-500" />
-        <span class="font-medium text-slate-900 dark:text-slate-100">{{ suggestion.name }}</span>
-        <span class="text-sm text-slate-500">{{ suggestion.region }}, {{ suggestion.country }}</span>
+        <MapPin
+          class="w-4 h-4 flex-shrink-0"
+          :class="isDark ? 'text-blue-400' : 'text-blue-500'"
+        />
+
+        <span
+          class="text-sm font-medium"
+          :class="isDark ? 'text-white' : 'text-slate-800'"
+        >
+          {{ suggestion.name }}
+        </span>
+
+        <span
+          class="text-xs ml-auto"
+          :class="isDark ? 'text-white/40' : 'text-slate-400'"
+        >
+          {{ suggestion.region }}, {{ suggestion.country }}
+        </span>
       </button>
     </div>
   </div>

@@ -1,15 +1,25 @@
-import { ref, watch } from 'vue'
+import { ref, watch, unref, onScopeDispose } from 'vue';
 
-export function useDebounce(value, delay = 300) {
-  const debouncedValue = ref(value.value)
-  let timeoutId = null
+export function useDebounce(source, delay = 300) {
+  const debounced = ref(unref(source));
+  let timeoutId;
 
-  watch(value, (newValue) => {
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => {
-      debouncedValue.value = newValue
-    }, delay)
-  })
+  const stop = watch(
+    source,
+    (value) => {
+      clearTimeout(timeoutId);
 
-  return debouncedValue
+      timeoutId = setTimeout(() => {
+        debounced.value = value;
+      }, delay);
+    },
+    { immediate: true }
+  );
+
+  onScopeDispose(() => {
+    clearTimeout(timeoutId);
+    stop();
+  });
+
+  return debounced;
 }

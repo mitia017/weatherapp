@@ -1,28 +1,51 @@
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue';
+import { applyTheme } from '@/utils/themeDom';
+import { getStoredTheme, setStoredTheme } from '@/utils/storage';
+import {
+  getSystemPreference,
+  listenSystemThemeChange,
+} from '@/utils/themeSystem';
+
+const isDark = ref(false);
+let initialized = false;
+
+function init() {
+  if (initialized) return;
+
+  const savedTheme = getStoredTheme();
+  const system = getSystemPreference();
+
+  isDark.value = savedTheme ? savedTheme === 'dark' : system;
+
+  applyTheme(isDark.value);
+
+  watch(isDark, (val) => {
+    applyTheme(val);
+    setStoredTheme(val);
+  });
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') {
+      isDark.value = e.newValue === 'dark';
+    }
+  });
+
+  listenSystemThemeChange((isDarkSystem) => {
+    if (!getStoredTheme()) {
+      isDark.value = isDarkSystem;
+    }
+  });
+
+  initialized = true;
+}
 
 export function useDarkMode() {
-  const isDark = ref(false)
+  init();
 
   const toggleDarkMode = () => {
-    isDark.value = !isDark.value
-    if (isDark.value) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-    localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-  }
+    console.log('Toggling dark mode');
+    isDark.value = !isDark.value;
+  };
 
-  onMounted(() => {
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      isDark.value = true
-      document.documentElement.classList.add('dark')
-    }
-  })
-
-  return {
-    isDark,
-    toggleDarkMode
-  }
+  return { isDark, toggleDarkMode };
 }
