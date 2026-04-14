@@ -1,0 +1,6 @@
+import{b as a,e as t,j as n,u as r,m as l,s as i,a as c}from"./index-vui0f7RE.js";import{c as u}from"./createLucideIcon-DV364hkJ.js";/**
+ * @license lucide-vue-next v0.344.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const x=u("HomeIcon",[["path",{d:"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",key:"y5dka4"}],["polyline",{points:"9 22 9 12 15 12 15 22",key:"e2us08"}]]),m={class:"min-h-screen flex items-center justify-center px-4"},p={class:"text-center max-w-md"},g={__name:"NotFound",setup(d){const s=i(),o=()=>{s.push("/")};return(k,e)=>(c(),a("div",m,[t("div",p,[e[1]||(e[1]=t("h1",{class:"text-7xl font-black text-slate-800 dark:text-white"},"404",-1)),e[2]||(e[2]=t("p",{class:"mt-4 text-lg text-slate-600 dark:text-white/60"}," Page introuvable ",-1)),e[3]||(e[3]=t("p",{class:"mt-2 text-sm text-slate-500 dark:text-white/40"}," La page que vous cherchez n’existe pas ou a été déplacée. ",-1)),t("button",{onClick:o,class:"mt-6 inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"},[n(r(x),{class:"w-4 h-4"}),e[0]||(e[0]=l(" Retour à l’accueil ",-1))])])]))}};export{g as default};
